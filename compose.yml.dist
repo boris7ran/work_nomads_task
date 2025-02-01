@@ -1,0 +1,43 @@
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: work_nomads_task-nginx
+    volumes:
+      - ./:/var/www/project/:cached
+    ports:
+      - 8080:80
+    networks:
+      - work_nomads_task
+  php:
+    build:
+      context: ./docker/php
+    container_name: work_nomads_task-php
+    volumes:
+      - ./:/var/www/:cached
+    networks:
+      - work_nomads_task
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    container_name: work_nomads_task-database
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-work_nomads_task}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_USER: ${POSTGRES_USER:-work_nomads_task}
+      PGUSER: 'work_nomads_task'
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-work_nomads_task}", "-U", "${POSTGRES_USER:-work_nomads_task}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - ./docker/psql/data:/var/lib/postgresql/data:rw
+    networks:
+      - work_nomads_task
+
+networks:
+  work_nomads_task:
+    external: true
