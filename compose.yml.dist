@@ -10,6 +10,7 @@ services:
       - 8080:80
     networks:
       - work_nomads_task
+
   php:
     build:
       context: ./docker/php
@@ -20,6 +21,7 @@ services:
       - work_nomads_task
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     container_name: work_nomads_task-database
@@ -34,10 +36,72 @@ services:
       retries: 5
       start_period: 60s
     volumes:
-      - ./docker/psql/data:/var/lib/postgresql/data:rw
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - work_nomads_task
+
+  fusionauth:
+    image: fusionauth/fusionauth-app:latest
+    container_name: work_nomads_task-fusionauth
+    depends_on:
+      database:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    env_file:
+      - ./docker/fusionauth/.env
+    environment:
+      SEARCH_SERVERS: http://search:9200
+      SEARCH_TYPE: elasticsearch
+    healthcheck:
+      test: curl --silent --fail http://localhost:9011/api/status -o /dev/null -w "%{http_code}"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - work_nomads_task
+    restart: unless-stopped
+    ports:
+      - 9011:9011
+    volumes:
+      - fusionauth_config:/usr/local/fusionauth/config
+
+  search:
+    image: opensearchproject/opensearch:2.11.0
+    container_name: work_nomads_task-opensearch
+    env_file:
+      - ./docker/fusionauth/.env
+    environment:
+      cluster.name: fusionauth
+      discovery.type: single-node
+      node.name: search
+      plugins.security.disabled: true
+      bootstrap.memory_lock: true
+    healthcheck:
+      interval: 10s
+      retries: 80
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:9200/
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance Analyzer
+    volumes:
+      - search_data:/usr/share/opensearch/data
     networks:
       - work_nomads_task
 
 networks:
   work_nomads_task:
     external: true
+
+volumes:
+  db_data:
+  fusionauth_config:
+  search_data:
