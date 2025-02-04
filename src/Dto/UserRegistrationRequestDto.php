@@ -16,8 +16,6 @@ class UserRegistrationRequestDto
         public ?array $data = null,
         #[SerializedPath('[registration][generateAuthenticationToken]')]
         public ?bool $generateAuthenticationToken = null,
-        #[SerializedPath('[registration][role]')]
-        public ?string $role = null,
         #[SerializedPath('[registration][authenticationToken]')]
         public ?bool $authenticationToken = null,
         #[SerializedPath('[registration][preferredLanguages]')]
