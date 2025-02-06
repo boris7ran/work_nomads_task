@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Fusion Auth API integration
+            description: Symfony app with Fusion Auth Integration
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/(?!(_profiler|_wdt|_error|.*?/doc$)).*$

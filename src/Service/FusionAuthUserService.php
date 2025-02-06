@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Dto\LoginDto;
 use App\Dto\UserRequestDto;
 use App\Dto\UserDto;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Serializer\Normalizer\UnwrappingDenormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -25,28 +28,32 @@ class FusionAuthUserService
     ) {
     }
 
-    public function loginUser(string $email, string $password): ResponseInterface
+    public function loginUser(LoginDto $loginDto): ResponseInterface
     {
         return $this->fusionAuthClient->request('POST', '/api/login', [
             'json' => [
-                'loginId' => $email,
-                'password' => $password,
+                'loginId' => $loginDto->email,
+                'password' => $loginDto->password,
             ],
         ]);
     }
 
     public function getUserById(string $userId): UserDto
     {
-        $response = $this->fusionAuthClient->request('GET', "/api/user/{$userId}");
+        try {
+            $response = $this->fusionAuthClient->request('GET', "/api/user/{$userId}");
 
-        $userDto = $this->serializer->deserialize(
-            $response->getContent(),
-            UserDto::class,
-            'json',
-            [
-                UnwrappingDenormalizer::UNWRAP_PATH => '[user]',
-            ]
-        );
+            $userDto = $this->serializer->deserialize(
+                $response->getContent(),
+                UserDto::class,
+                'json',
+                [
+                    UnwrappingDenormalizer::UNWRAP_PATH => '[user]',
+                ]
+            );
+        } catch (ClientExceptionInterface $exception) {
+            throw new ResourceNotFoundException($exception->getMessage(), previous: $exception);
+        }
 
         $errors = $this->validator->validate($userDto);
 
