@@ -47,27 +47,30 @@ class SecurityController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
     ): JsonResponse {
-
-        $loginDto = $serializer->deserialize(
+        $loginResponseDto = $serializer->deserialize(
             $request->getContent(),
             LoginRequestDto::class,
             'json',
         );
 
-        $errors = $validator->validate($loginDto);
+        $errors = $validator->validate($loginResponseDto);
 
         if (count($errors) > 0) {
             return new JsonResponse(['error' => true, 'message' => 'Invalid Credentials'], Response::HTTP_BAD_REQUEST);
         }
 
         try {
-            $loginDto = $fusionAuthUserService->loginUser($loginDto);
+            $loginResponseDto = $fusionAuthUserService->loginUser($loginResponseDto);
         } catch (ClientExceptionInterface $exception) {
             return new JsonResponse(['error' => true, 'message' => $exception->getMessage()], $exception->getCode());
         };
 
         $response = new JsonResponse(['success' => true]);
-        $response->headers->setCookie(Cookie::create('token', $loginDto->token));
+        $response->headers->setCookie(Cookie::create('token', $loginResponseDto->token));
+
+        if ($loginResponseDto->refreshToken) {
+            $response->headers->setCookie(Cookie::create('refreshToken', $loginResponseDto->refreshToken));
+        }
 
         return $response;
     }

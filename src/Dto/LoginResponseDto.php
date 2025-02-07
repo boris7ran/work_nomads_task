@@ -9,11 +9,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class LoginResponseDto
 {
     public function __construct(
-        #[Assert\Email]
         #[Assert\NotBlank]
         public string $token,
         #[Assert\NotBlank]
         public int $tokenExpirationInstant,
         public UserDto $user,
+        public ?string $refreshToken = null,
     ) {}
 }

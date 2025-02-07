@@ -26,6 +26,7 @@ class FusionAuthUserService
         private readonly HttpClientInterface $fusionAuthClient,
         private readonly SerializerInterface $serializer,
         private readonly ValidatorInterface $validator,
+        private readonly string $fusionAuthApplicationId,
     ) {
     }
 
@@ -35,6 +36,7 @@ class FusionAuthUserService
             'json' => [
                 'loginId' => $loginDto->email,
                 'password' => $loginDto->password,
+                'applicationId' => $this->fusionAuthApplicationId,
             ],
         ]);
 
