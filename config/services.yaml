@@ -34,3 +34,7 @@ services:
     App\Service\FusionAuthJwtService:
         arguments:
             $fusionAuthClient: '@fusionauth.client'
+
+    App\Service\FusionAuthWebhookService:
+        arguments:
+            $fusionAuthClient: '@fusionauth.client'

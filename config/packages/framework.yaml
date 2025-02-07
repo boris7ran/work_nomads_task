@@ -21,6 +21,12 @@ framework:
                     Accept: 'application/json'
                     Content-Type: 'application/json'
 
+    webhook:
+        routing:
+            fusionauth:
+                service: 'App\Webhook\FusionAuthEventParser'
+                secret: '%env(FUSIONAUTH_SECRET)%'
+
 when@test:
     framework:
         test: true

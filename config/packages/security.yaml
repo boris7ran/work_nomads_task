@@ -7,6 +7,9 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        webhook:
+            pattern: ^/webhook
+            security: false
         main:
             lazy: true
             stateless: true
