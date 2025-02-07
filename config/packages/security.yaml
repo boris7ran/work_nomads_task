@@ -3,18 +3,17 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-    providers:
-        fusion_auth_provider:
-            id: App\Security\FusionAuthUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: fusion_auth_provider
-            custom_authenticators:
-                - App\Security\FusionAuthAuthenticator
+            stateless: true
+            access_token:
+                token_handler: App\Security\FusionAuthTokenHandler
+                token_extractors: App\Security\CookieTokenExtractor
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

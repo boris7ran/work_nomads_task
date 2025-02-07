@@ -6,13 +6,14 @@ namespace App\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class LoginDto
+class LoginResponseDto
 {
     public function __construct(
         #[Assert\Email]
         #[Assert\NotBlank]
-        public string $email,
+        public string $token,
         #[Assert\NotBlank]
-        public string $password,
+        public int $tokenExpirationInstant,
+        public UserDto $user,
     ) {}
 }

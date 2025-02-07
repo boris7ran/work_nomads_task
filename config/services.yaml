@@ -30,3 +30,7 @@ services:
     App\Service\FusionAuthUserRegistrationService:
         arguments:
             $fusionAuthClient: '@fusionauth.client'
+
+    App\Service\FusionAuthJwtService:
+        arguments:
+            $fusionAuthClient: '@fusionauth.client'

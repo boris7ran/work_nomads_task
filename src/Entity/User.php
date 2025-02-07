@@ -3,22 +3,16 @@ namespace App\Entity;
 
 use JsonSerializable;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 class User implements UserInterface, JsonSerializable
 {
-    const GROUP_PUBLIC = 'User.Public';
     private array $roles = [];
 
     public function __construct(
-        #[Groups(self::GROUP_PUBLIC)]
         private string $id,
-        #[Groups(self::GROUP_PUBLIC)]
-        private string $email,
-        #[Groups(self::GROUP_PUBLIC)]
-        private string $firstName,
-        #[Groups(self::GROUP_PUBLIC)]
-        private string $lastName,
+        private ?string $email,
+        private ?string $firstName,
+        private ?string $lastName,
     ) {
     }
 

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Dto\LoginDto;
+use App\Dto\LoginRequestDto;
+use App\Dto\LoginResponseDto;
 use App\Dto\UserRequestDto;
 use App\Dto\UserDto;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -28,14 +29,20 @@ class FusionAuthUserService
     ) {
     }
 
-    public function loginUser(LoginDto $loginDto): ResponseInterface
+    public function loginUser(LoginRequestDto $loginDto): LoginResponseDto
     {
-        return $this->fusionAuthClient->request('POST', '/api/login', [
+        $response = $this->fusionAuthClient->request('POST', '/api/login', [
             'json' => [
                 'loginId' => $loginDto->email,
                 'password' => $loginDto->password,
             ],
         ]);
+
+        return $this->serializer->deserialize(
+            $response->getContent(),
+            LoginResponseDto::class,
+            'json',
+        );
     }
 
     public function getUserById(string $userId): UserDto
