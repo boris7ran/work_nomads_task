@@ -22,6 +22,15 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  react:
+    build:
+      dockerfile: docker/react/Dockerfile
+    container_name: work_nomads_task-react
+    volumes:
+      - ./webapp:/app/
+    ports:
+      - 3000:3000
+
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     container_name: work_nomads_task-database
@@ -37,6 +46,8 @@ services:
       start_period: 60s
     volumes:
       - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     networks:
       - work_nomads_task
 
@@ -94,6 +105,14 @@ services:
       - 9600:9600 # Performance Analyzer
     volumes:
       - search_data:/usr/share/opensearch/data
+    networks:
+      - work_nomads_task
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: work_nomads_task-mailhog
+    ports:
+      - 8025:8025
     networks:
       - work_nomads_task
 

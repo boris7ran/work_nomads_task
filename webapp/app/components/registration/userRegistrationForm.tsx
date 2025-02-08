@@ -71,15 +71,19 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
                 <select name="roles" multiple onChange={(e) => handleMultiSelectChange(e, "roles")}
                         className={styles.multiSelect}>
                     {application.roles.map(role => (
-                        <option key={role} value={role} selected={formData.roles.includes(role)}>
-                            {role}
+                        <option key={role.id} value={role.name} selected={formData.roles.includes(role.id)}>
+                            {role.name}
                         </option>
                     ))}
                 </select>
 
                 <label>Preferred Languages:</label>
-                <select name="languages" multiple onChange={(e) => handleMultiSelectChange(e, "languages")}
-                        className={styles.multiSelect}>
+                <select
+                    name="languages"
+                    multiple
+                    onChange={(e) => handleMultiSelectChange(e, "languages")}
+                    className={styles.multiSelect}
+                >
                     {LANGUAGES.map(lang => (
                         <option key={lang.value} value={lang.value}
                                 selected={formData.preferredLanguages.includes(lang.value)}>
