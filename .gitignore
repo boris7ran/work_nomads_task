@@ -13,3 +13,8 @@
 /compose.yml
 /docker/psql/data
 ###< docker ###
+
+###> react ###\
+webapp/.next
+webapp/node_modules
+###< react ###

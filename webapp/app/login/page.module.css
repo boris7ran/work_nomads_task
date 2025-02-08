@@ -1,0 +1,72 @@
+.loginContainer {
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.loginForm {
+  width: 350px;
+  padding: 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.loginForm label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+  display: block;
+}
+
+.loginForm input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.loginForm input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.loginForm button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.loginForm button:hover {
+  background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 400px) {
+  .loginForm {
+    width: 90%;
+    padding: 20px;
+  }
+}
+
+.googleSsoButton {
+  margin-top: 5px;
+  background-color: #f10303;
+  color: #fff;
+}
