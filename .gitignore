@@ -17,4 +17,5 @@
 ###> react ###\
 webapp/.next
 webapp/node_modules
+webapp/.pnpm-store
 ###< react ###
