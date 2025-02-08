@@ -108,7 +108,8 @@ class SecurityController extends AbstractController
     public function oauthCheck(
         Request $request,
         FusionAuthIdentityProviderService $fusionAuthIdentityProviderService,
-        string $oauthRedirectUri
+        UrlGeneratorInterface $urlGenerator,
+        string $reactRedirectUrl,
     ) {
         $identityProviderDto = $fusionAuthIdentityProviderService->getIdentityProvider('Google');
 
@@ -116,18 +117,21 @@ class SecurityController extends AbstractController
             return new JsonResponse(['error' => true, 'message' => 'No identity provider found.'], Response::HTTP_BAD_REQUEST);
         }
 
+        $redirectUri = $urlGenerator->generate('oauth_check', referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
+
         try {
             $loginResponseDto = $fusionAuthIdentityProviderService->getTokenFromOAuthCode(
                 $request->query->get('code'),
-                $oauthRedirectUri,
+                $redirectUri,
                 $identityProviderDto,
             );
         } catch (ClientExceptionInterface $exception) {
             return new JsonResponse(['error' => true, 'message' => $exception->getMessage()], $exception->getCode());
         };
 
-        $response = new JsonResponse(['success' => true]);
+        $response = new JsonResponse(['success' => true], status: Response::HTTP_PERMANENTLY_REDIRECT);
         $response->headers->setCookie(Cookie::create('token', $loginResponseDto->token));
+        $response->headers->set('Location', $reactRedirectUrl);
 
         if ($loginResponseDto->refreshToken) {
             $response->headers->setCookie(Cookie::create('refreshToken', $loginResponseDto->refreshToken));

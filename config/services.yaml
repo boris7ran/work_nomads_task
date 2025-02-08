@@ -14,7 +14,7 @@ services:
             $fusionAuthApplicationId: '%env(FUSIONAUTH_APPLICATION_ID)%'
             $googleClientId: '%env(OAUTH_GOOGLE_ID)%'
             $googleClientSecret: '%env(OAUTH_GOOGLE_SECRET)%'
-            $oauthRedirectUri: '%env(OAUTH_REDIRECT_URI)%'
+            $reactRedirectUrl: '%env(REACT_URL)%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
