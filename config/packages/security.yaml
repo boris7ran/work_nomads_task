@@ -8,7 +8,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern: ^/(login|oauth)
+            pattern: ^/(login|oauth|api/doc)
             security: false
         webhook:
             pattern: ^/webhook

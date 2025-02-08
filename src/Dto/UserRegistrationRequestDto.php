@@ -14,6 +14,12 @@ class UserRegistrationRequestDto
         #[SerializedPath('[registration][applicationId]')]
         #[OA\Property(example: '27b05353-f723-4eb7-b8c2-d6d0c2815949')]
         public string $applicationId,
+        #[SerializedPath('[registration][username]')]
+        #[OA\Property(example: 'username')]
+        public ?string $username = null,
+        #[SerializedPath('[registration][timezone]')]
+        #[OA\Property(example: 'username')]
+        public ?string $timezone = null,
         #[SerializedPath('[registration][data]')]
         #[OA\Property(example: [])]
         public ?array $data = null,

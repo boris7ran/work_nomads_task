@@ -17,6 +17,8 @@ class UserRegistrationDto
         public ?array $roles = [],
         public ?array $token = [],
         public ?string $usernameStatus = null,
+        public ?array $preferredLanguages = [],
+        public ?string $timezone = null,
         public ?bool $verified = null,
         #[Context(
             normalizationContext: [DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i'],

@@ -108,7 +108,7 @@ class SecurityController extends AbstractController
     public function oauthCheck(
         Request $request,
         FusionAuthIdentityProviderService $fusionAuthIdentityProviderService,
-        UrlGeneratorInterface $urlGenerator,
+        string $oauthRedirectUri
     ) {
         $identityProviderDto = $fusionAuthIdentityProviderService->getIdentityProvider('Google');
 
@@ -116,12 +116,10 @@ class SecurityController extends AbstractController
             return new JsonResponse(['error' => true, 'message' => 'No identity provider found.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $redirectUri = $urlGenerator->generate('oauth_check', referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
-
         try {
             $loginResponseDto = $fusionAuthIdentityProviderService->getTokenFromOAuthCode(
                 $request->query->get('code'),
-                $redirectUri,
+                $oauthRedirectUri,
                 $identityProviderDto,
             );
         } catch (ClientExceptionInterface $exception) {

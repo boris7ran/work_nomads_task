@@ -31,7 +31,7 @@ class UserRegistrationsController extends AbstractController
         response: 400,
         description: 'Bad Request',
     )]
-    public function userCreate(Request $request, string $userId, SerializerInterface $serializer): JsonResponse
+    public function userRegistrationCreate(Request $request, string $userId, SerializerInterface $serializer): JsonResponse
     {
         try {
             $userRegistrationRequestDto = $serializer->deserialize(
@@ -58,7 +58,7 @@ class UserRegistrationsController extends AbstractController
         response: 404,
         description: 'Not found',
     )]
-    public function user(
+    public function userRegistrationGet(
         string $userId,
         string $applicationId,
     ): JsonResponse {
@@ -117,7 +117,7 @@ class UserRegistrationsController extends AbstractController
         response: 400,
         description: 'Bad Request',
     )]
-    public function userDelete(string $userId, string $applicationId): JsonResponse
+    public function userRegistrationDelete(string $userId, string $applicationId): JsonResponse
     {
         $this->fusionAuthUserRegistrationService->deleteUserRegistration($userId, $applicationId);
 
