@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Dto\LoginRequestDto;
 use App\Dto\UserDto;
 use App\Entity\User;
+use App\Service\FusionAuthIdentityProviderService;
 use App\Service\FusionAuthUserService;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
@@ -90,5 +93,48 @@ class SecurityController extends AbstractController
         $userDto = $fusionAuthUserService->getUserById($this->getUser()->getUserIdentifier());
 
         return new JsonResponse($userDto);
+    }
+
+    #[Route('/oauth/redirect', name: 'oauth_redirect', methods: ['GET'])]
+    public function oauthRedirect(ClientRegistry $clientRegistry)
+    {
+        $client = $clientRegistry->getClient('google');
+        $client->setAsStateless();
+
+        return $client->redirect(['profile', 'email', 'openid']);
+    }
+
+    #[Route('/oauth/check', name: 'oauth_check', methods: ['GET'])]
+    public function oauthCheck(
+        Request $request,
+        FusionAuthIdentityProviderService $fusionAuthIdentityProviderService,
+        UrlGeneratorInterface $urlGenerator,
+    ) {
+        $identityProviderDto = $fusionAuthIdentityProviderService->getIdentityProvider('Google');
+
+        if (!$identityProviderDto) {
+            return new JsonResponse(['error' => true, 'message' => 'No identity provider found.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $redirectUri = $urlGenerator->generate('oauth_check', referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
+
+        try {
+            $loginResponseDto = $fusionAuthIdentityProviderService->getTokenFromOAuthCode(
+                $request->query->get('code'),
+                $redirectUri,
+                $identityProviderDto,
+            );
+        } catch (ClientExceptionInterface $exception) {
+            return new JsonResponse(['error' => true, 'message' => $exception->getMessage()], $exception->getCode());
+        };
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(Cookie::create('token', $loginResponseDto->token));
+
+        if ($loginResponseDto->refreshToken) {
+            $response->headers->setCookie(Cookie::create('refreshToken', $loginResponseDto->refreshToken));
+        }
+
+        return $response;
     }
 }

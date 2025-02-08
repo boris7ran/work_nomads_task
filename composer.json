@@ -8,6 +8,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "jerryhopper/oauth2-fusionauth": "^0.0.2",
+        "knpuniversity/oauth2-client-bundle": "^2.18",
+        "league/oauth2-google": "^4.0",
         "nelmio/api-doc-bundle": "^4.36",
         "symfony/asset": "7.2.*",
         "symfony/console": "7.2.*",

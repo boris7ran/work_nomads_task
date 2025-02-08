@@ -13,8 +13,7 @@ class FusionAuthJwtService
     public function __construct(
         private readonly HttpClientInterface $fusionAuthClient,
         private readonly SerializerInterface $serializer,
-    ) {
-    }
+    ) {}
 
     public function validateAccessToken(string $accessToken): bool
     {
