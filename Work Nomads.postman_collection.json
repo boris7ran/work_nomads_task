@@ -1,0 +1,320 @@
+{
+	"info": {
+		"_postman_id": "c1d8245a-45bf-48ed-9ebd-506ea4838e94",
+		"name": "Work Nomads",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8068619"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "boris.ran7@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Password123!",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Me",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users?search=email",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "email"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/2cdd04f3-a34f-4fde-a140-d563a48141e0a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"2cdd04f3-a34f-4fde-a140-d563a48141e0a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"testcreate@test.com\",\n    \"firstName\": \"Email\",\n    \"lastName\": \"Test\",\n    \"password\": \"secret123\",\n    \"birthDate\": \"1989-12-12\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Registration Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"applicationId\": \"43754f33-173c-47ce-87ce-c87b47a51802\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/registrations/27b05353-f723-4eb7-b8c2-d6d0c2815949",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"registrations",
+						"27b05353-f723-4eb7-b8c2-d6d0c2815949"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Registration Edit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"applicationId\": \"3c219e58-ed0e-4b18-ad48-f4f92793ae32\",\n    \"roles\": [\n        \"admin\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/registrations/2cdd04f3-a34f-4fde-a140-d563a48141e0/43754f33-173c-47ce-87ce-c87b47a51802",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"registrations",
+						"2cdd04f3-a34f-4fde-a140-d563a48141e0",
+						"43754f33-173c-47ce-87ce-c87b47a51802"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Registration Delete",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"applicationId\": \"3c219e58-ed0e-4b18-ad48-f4f92793ae32\",\n    \"roles\": [\n        \"admin\",\n        \"api_key_manager\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/registrations/2cdd04f3-a34f-4fde-a140-d563a48141e0/3c219e58-ed0e-4b18-ad48-f4f92793ae32",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"registrations",
+						"2cdd04f3-a34f-4fde-a140-d563a48141e0",
+						"3c219e58-ed0e-4b18-ad48-f4f92793ae32"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Registration Get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"applicationId\": \"43754f33-173c-47ce-87ce-c87b47a51802\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/registrations/2cdd04f3-a34f-4fde-a140-d563a48141e0/43754f33-173c-47ce-87ce-c87b47a51802",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"registrations",
+						"2cdd04f3-a34f-4fde-a140-d563a48141e0",
+						"43754f33-173c-47ce-87ce-c87b47a51802"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Edit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"emakedit@test.com\",\n    \"firstName\": \"Namen\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/27b05353-f723-4eb7-b8c2-d6d0c2815949",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"27b05353-f723-4eb7-b8c2-d6d0c2815949"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"email121@test.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/2cdd04f3-a34f-4fde-a140-d563a48141e0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"2cdd04f3-a34f-4fde-a140-d563a48141e0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
