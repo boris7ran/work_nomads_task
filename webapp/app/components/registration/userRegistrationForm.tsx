@@ -48,7 +48,7 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleMultiSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, key: "roles" | "languages") => {
+    const handleMultiSelectChange = (e: React.ChangeEvent<HTMLSelectElement>, key: "roles" | "preferredLanguages") => {
         const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
         setFormData({ ...formData, [key]: selectedValues });
     };
@@ -68,10 +68,15 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
                 <input type="text" name="username" value={formData.username ?? ''} onChange={handleChange} required/>
 
                 <label>Roles:</label>
-                <select name="roles" multiple onChange={(e) => handleMultiSelectChange(e, "roles")}
-                        className={styles.multiSelect}>
+                <select
+                    name="roles"
+                    multiple
+                    onChange={(e) => handleMultiSelectChange(e, "roles")}
+                    className={styles.multiSelect}
+                    value={formData.roles}
+                >
                     {application.roles.map(role => (
-                        <option key={role.id} value={role.name} selected={formData.roles.includes(role.id)}>
+                        <option key={role.id} value={role.name}>
                             {role.name}
                         </option>
                     ))}
@@ -81,12 +86,12 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
                 <select
                     name="languages"
                     multiple
-                    onChange={(e) => handleMultiSelectChange(e, "languages")}
+                    onChange={(e) => handleMultiSelectChange(e, "preferredLanguages")}
                     className={styles.multiSelect}
+                    value={formData.preferredLanguages}
                 >
                     {LANGUAGES.map(lang => (
-                        <option key={lang.value} value={lang.value}
-                                selected={formData.preferredLanguages.includes(lang.value)}>
+                        <option key={lang.value} value={lang.value}>
                             {lang.label}
                         </option>
                     ))}

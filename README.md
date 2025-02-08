@@ -15,7 +15,8 @@ Implemented with docker v27, earlier versions should be fine also
 3. Build images and spin up the containers using `docker compose up -d`
 4. Following [FusionAuth guide](https://fusionauth.io/docs/quickstarts/5-minute-docker#2-complete-the-setup-wizard) setup the app using wizard on [localhost:9011](http://localhost:9011)
 5. Create an application on FusionAuth
-   1. For application to work JWT should be enabled in the application with refresh token ![JWT Config](/docs/jwt_config.png "JWT Config ")
+   1. For application to work JWT should be enabled in the application with refresh token ![JWT Config](/docs/jwt_config.png "JWT Config")
+   2. The refresh token needs to be enabled additionally in Security tab of Application ![JWT Refresh Token](/docs/jwt_refresh_config.png "JWT Refresh Token")
 6. Add the application ID to [.env](.env) variable `FUSIONAUTH_APPLICATION_ID`
 7. Add a new API Key and copy the Key field in FusionAuth [http://localhost:9011/admin/api-key/add](http://localhost:9011/admin/api-key/add) to `FUSIONAUTH_API_KEY` [.env](.env) variable
 8. Run `docker exec -it work_nomads_task-php composer install`
