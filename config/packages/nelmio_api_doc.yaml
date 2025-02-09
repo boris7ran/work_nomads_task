@@ -4,6 +4,16 @@ nelmio_api_doc:
             title: Fusion Auth API integration
             description: Symfony app with Fusion Auth Integration
             version: 1.0.0
+        component:
+            securitySchemes:
+                cookieAuth:
+                    type: accessToken
+                    in: cookie
+                    name: token
+
+        security:
+            - cookieAuth: []
+
     areas: # to filter documented areas
         path_patterns:
             - ^/(?!(_profiler|_wdt|_error|webhook|.*?/doc$)).*$

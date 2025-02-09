@@ -6,6 +6,7 @@ import api from '@/app/http/Client';
 import styles from './page.module.css';
 
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -57,6 +58,7 @@ const Login = () => {
                         Sign in with Google
                     </button>
                 </a>
+                <Link href={'/password-forgotten'}>Password Forgotten</Link>
             </form>
         </div>
     );

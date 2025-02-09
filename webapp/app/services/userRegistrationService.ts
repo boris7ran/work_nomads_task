@@ -17,6 +17,15 @@ export const createUserRegistration = async (userId: string, applicationId: stri
     return response.data;
 }
 
+export const editUserRegistration = async (userId: string, applicationId: string, userRegistrationData: UserRegistrationFormInterface): Promise<UserRegistrationInterface> => {
+    const response = await api.put(`/users/registrations/${userId}/${applicationId}`, {
+        applicationId,
+        ...userRegistrationData,
+    });
+
+    return response.data;
+}
+
 export const deleteUserRegistration = async (userId: string, applicationId: string): Promise<> => {
     const response = await api.delete(`/users/registrations/${userId}/${applicationId}`);
 

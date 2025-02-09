@@ -30,3 +30,11 @@ export const updateUser = async (userId: string, userData: Partial<UserFormInter
 export const deleteUser = async (userId: string) => {
     await api.delete(`/users/${userId}`);
 }
+
+export const userPasswordForgotten = async (userEmail: string) => {
+    await api.post('/users/password-forgotten', { userEmail });
+}
+
+export const changePassword = async (changePasswordId: string, password: string) => {
+    await api.post('/users/password-change', { changePasswordId, password });
+}

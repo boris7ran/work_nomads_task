@@ -8,6 +8,7 @@ use App\Dto\UserRegistrationDto;
 use App\Dto\UserRegistrationRequestDto;
 use App\Service\FusionAuthUserRegistrationService;
 use Nelmio\ApiDocBundle\Attribute\Model;
+use Nelmio\ApiDocBundle\Attribute\Security;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,6 +32,7 @@ class UserRegistrationsController extends AbstractController
         response: 400,
         description: 'Bad Request',
     )]
+    #[Security(name: 'cookieAuth')]
     public function userRegistrationCreate(Request $request, string $userId, SerializerInterface $serializer): JsonResponse
     {
         try {
@@ -58,6 +60,7 @@ class UserRegistrationsController extends AbstractController
         response: 404,
         description: 'Not found',
     )]
+    #[Security(name: 'cookieAuth')]
     public function userRegistrationGet(
         string $userId,
         string $applicationId,
@@ -87,6 +90,7 @@ class UserRegistrationsController extends AbstractController
         response: 400,
         description: 'Bad Request',
     )]
+    #[Security(name: 'cookieAuth')]
     public function userRegistrationEdit(
         Request $request,
         string $userId,
@@ -117,6 +121,7 @@ class UserRegistrationsController extends AbstractController
         response: 400,
         description: 'Bad Request',
     )]
+    #[Security(name: 'cookieAuth')]
     public function userRegistrationDelete(string $userId, string $applicationId): JsonResponse
     {
         $this->fusionAuthUserRegistrationService->deleteUserRegistration($userId, $applicationId);

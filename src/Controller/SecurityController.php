@@ -11,6 +11,7 @@ use App\Service\FusionAuthIdentityProviderService;
 use App\Service\FusionAuthUserService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Nelmio\ApiDocBundle\Attribute\Model;
+use Nelmio\ApiDocBundle\Attribute\Security;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -44,6 +45,7 @@ class SecurityController extends AbstractController
         response: 400,
         description: 'Invalid credentials.',
     )]
+    #[Security(name: null)]
     public function login(
         Request $request,
         FusionAuthUserService $fusionAuthUserService,
@@ -88,6 +90,7 @@ class SecurityController extends AbstractController
         response: 403,
         description: 'Forbidden',
     )]
+    #[Security(name: 'cookieAuth')]
     public function me(FusionAuthUserService $fusionAuthUserService): JsonResponse
     {
         $userDto = $fusionAuthUserService->getUserById($this->getUser()->getUserIdentifier());
@@ -96,6 +99,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/oauth/redirect', name: 'oauth_redirect', methods: ['GET'])]
+    #[Security(name: null)]
     public function oauthRedirect(ClientRegistry $clientRegistry)
     {
         $client = $clientRegistry->getClient('google');
@@ -105,11 +109,12 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/oauth/check', name: 'oauth_check', methods: ['GET'])]
+    #[Security(name: null)]
     public function oauthCheck(
         Request $request,
         FusionAuthIdentityProviderService $fusionAuthIdentityProviderService,
         UrlGeneratorInterface $urlGenerator,
-        string $reactRedirectUrl,
+        string $browserUrl,
     ) {
         $identityProviderDto = $fusionAuthIdentityProviderService->getIdentityProvider('Google');
 
@@ -131,7 +136,7 @@ class SecurityController extends AbstractController
 
         $response = new JsonResponse(['success' => true], status: Response::HTTP_PERMANENTLY_REDIRECT);
         $response->headers->setCookie(Cookie::create('token', $loginResponseDto->token));
-        $response->headers->set('Location', $reactRedirectUrl);
+        $response->headers->set('Location', $browserUrl);
 
         if ($loginResponseDto->refreshToken) {
             $response->headers->setCookie(Cookie::create('refreshToken', $loginResponseDto->refreshToken));

@@ -61,6 +61,14 @@ export const Registration: React.FC<RegistrationProps> = ({ userId, applications
                     <p><strong>Preferred Languages:</strong> {userRegistration.preferredLanguages.join(', ')}</p>
                     <p><strong>Timezone:</strong> {userRegistration.timezone}</p>
 
+
+                    <Link
+                        href={`/userRegistrations/${userId}/${userRegistration.applicationId}/edit`}
+                        className={styles.editButton}
+                    >
+                        Edit Registration
+                    </Link>
+
                     <button
                         className={styles.deleteButton}
                         onClick={() => handleUserRegistrationDelete(userRegistration)}

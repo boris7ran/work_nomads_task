@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Dto\ApplicationDto;
 use App\Service\FusionAuthApplicationService;
 use Nelmio\ApiDocBundle\Attribute\Model;
+use Nelmio\ApiDocBundle\Attribute\Security;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,6 +24,7 @@ class ApplicationController extends AbstractController
             items: new OA\Items(ref: new Model(type: ApplicationDto::class))
         )
     )]
+    #[Security(name: 'cookieAuth')]
     public function applications(FusionAuthApplicationService $fusionAuthApplicationService)
     {
         return new JsonResponse($fusionAuthApplicationService->getApplications());
@@ -35,6 +37,7 @@ class ApplicationController extends AbstractController
         description: 'Successful response',
         content: new Model(type: ApplicationDto::class)
     )]
+    #[Security(name: 'cookieAuth')]
     public function application(string $applicationId, FusionAuthApplicationService $fusionAuthApplicationService)
     {
         return new JsonResponse($fusionAuthApplicationService->getApplication($applicationId));

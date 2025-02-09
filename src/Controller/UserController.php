@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\ChangePasswordRequestDto;
+use App\Dto\PasswordForgottenRequestDto;
 use App\Dto\UserDto;
 use App\Dto\UserRequestDto;
 use App\Service\FusionAuthUserService;
 use Nelmio\ApiDocBundle\Attribute\Model;
+use Nelmio\ApiDocBundle\Attribute\Security;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use function Symfony\Component\String\u;
 
 class UserController extends AbstractController
 {
@@ -40,6 +46,7 @@ class UserController extends AbstractController
             items: new OA\Items(ref: new Model(type: UserDto::class))
         )
     )]
+    #[Security(name: 'cookieAuth')]
     public function users(Request $request)
     {
         return new JsonResponse($this->fusionAuthUserService->searchUsers($request->query->get('search')));
@@ -62,6 +69,7 @@ class UserController extends AbstractController
             type: "object"
         ),
     )]
+    #[Security(name: 'cookieAuth')]
     public function userCreate(Request $request, SerializerInterface $serializer): JsonResponse
     {
         try {
@@ -89,6 +97,7 @@ class UserController extends AbstractController
         response: 404,
         description: 'Not found',
     )]
+    #[Security(name: 'cookieAuth')]
     public function user(Request $request, string $userId, SerializerInterface $serializer): JsonResponse
     {
         try {
@@ -120,6 +129,7 @@ class UserController extends AbstractController
         response: 404,
         description: 'Not found',
     )]
+    #[Security(name: 'cookieAuth')]
     public function userEdit(Request $request, string $userId, SerializerInterface $serializer): JsonResponse
     {
         try {
@@ -146,6 +156,7 @@ class UserController extends AbstractController
         response: 400,
         description: 'Bad Request',
     )]
+    #[Security(name: 'cookieAuth')]
     public function userDelete(string $userId): JsonResponse
     {
         if ($userId === $this->getUser()->getUserIdentifier()) {
@@ -154,6 +165,84 @@ class UserController extends AbstractController
 
         try {
             $this->fusionAuthUserService->deleteUser($userId);
+        } catch (ClientExceptionInterface $clientException) {
+            return new JsonResponse(['error' => $clientException->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/users/password-forgotten', name: 'user_password_forgotten', methods: ['POST'])]
+    #[OA\RequestBody(content: new Model(type: PasswordForgottenRequestDto::class))]
+    #[OA\Response(
+        response: 204,
+        description: 'User password chanegd email sent',
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Bad Request',
+    )]
+    #[Security(name: null)]
+    public function userPasswordForgotten(
+        Request $request,
+        SerializerInterface $serializer,
+        MailerInterface $mailer,
+        string $browserUrl
+    ): JsonResponse {
+        try {
+            $forgotPasswordDto = $serializer->deserialize(
+                $request->getContent(),
+                PasswordForgottenRequestDto::class,
+                'json'
+            );
+        } catch (\Exception $exception) {
+            return new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $passwordForgottenDto = $this->fusionAuthUserService->userPasswordForgotten($forgotPasswordDto);
+
+            $email = (new Email())
+                ->from('task@example.com')
+                ->to($forgotPasswordDto->userEmail)
+                ->subject('Password Forgotten')
+                ->text('Password Forgotten}')
+                ->html("<p>Please follow <a href='$browserUrl/password-forgotten/{$passwordForgottenDto->changePasswordId}'>this link</a> to reset your password</p>")
+            ;
+
+            $mailer->send($email);
+        } catch (ClientExceptionInterface $clientException) {
+            return new JsonResponse(['error' => $clientException->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/users/password-change', name: 'user_password_change', methods: ['POST'])]
+    #[OA\RequestBody(content: new Model(type: ChangePasswordRequestDto::class))]
+    #[OA\Response(
+        response: 204,
+        description: 'User password changed',
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Bad Request',
+    )]
+    #[Security(name: null)]
+    public function userPasswordChange(Request $request, SerializerInterface $serializer): JsonResponse
+    {
+        try {
+            $changePasswordRequestDto = $serializer->deserialize(
+                $request->getContent(),
+                ChangePasswordRequestDto::class,
+                'json'
+            );
+        } catch (\Exception $exception) {
+            return new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $this->fusionAuthUserService->userPasswordChange($changePasswordRequestDto);
         } catch (ClientExceptionInterface $clientException) {
             return new JsonResponse(['error' => $clientException->getMessage()], Response::HTTP_BAD_REQUEST);
         }

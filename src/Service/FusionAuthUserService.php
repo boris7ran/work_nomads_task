@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Dto\ChangePasswordRequestDto;
 use App\Dto\LoginRequestDto;
 use App\Dto\LoginResponseDto;
+use App\Dto\PasswordForgottenDto;
+use App\Dto\PasswordForgottenRequestDto;
 use App\Dto\UserRequestDto;
 use App\Dto\UserDto;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -177,5 +180,38 @@ class FusionAuthUserService
                 'query' => ['hardDelete' => 'true'],
             ],
         );
+    }
+
+    public function userPasswordForgotten(PasswordForgottenRequestDto $forgottenRequestDto): PasswordForgottenDto
+    {
+        $response = $this->fusionAuthClient->request(
+            'POST',
+            '/api/user/forgot-password',
+            [
+                'json' => [
+                    'loginId' => $forgottenRequestDto->userEmail,
+                    'sendForgotPasswordEmail' => false,
+                ],
+            ],
+        );
+
+        return $this->serializer->deserialize(
+            $response->getContent(),
+            PasswordForgottenDto::class,
+            'json'
+        );
+    }
+
+    public function userPasswordChange(ChangePasswordRequestDto $changePasswordRequestDto): int
+    {
+        $response = $this->fusionAuthClient->request(
+            'POST',
+            '/api/user/forgot-password',
+            [
+                'json' => $this->serializer->normalize($changePasswordRequestDto),
+            ],
+        );
+
+        return $response->getStatusCode();
     }
 }
