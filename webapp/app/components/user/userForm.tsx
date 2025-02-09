@@ -11,18 +11,16 @@ interface UserFormProps {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit }) => {
-    const [formData, setFormData] = useState<UserFormInterface>(
-        initialData ? {
-            ...initialData,
-            password: '',
-        } : {
-            email: '',
-            firstName: '',
-            lastName: '',
-            password: '',
-            birthDate: '',
-        }
-    );
+    const [formData, setFormData] = useState<UserFormInterface>({
+        email: initialData?.email || '',
+        firstName: initialData?.firstName || '',
+        lastName: initialData?.lastName || '',
+        password: '',
+        birthDate: initialData?.birthDate || '',
+    });
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,28 +28,41 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit }) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await onSubmit(formData);
+        setLoading(true);
+        setError(null);
+
+        try {
+            await onSubmit(formData);
+        } catch (err) {
+            setError('Submission failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className={styles.formContainer}>
             <form onSubmit={handleSubmit} className={styles.form}>
-                <label>Email:</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} required/>
+                {error && <p className={styles.error}>{error}</p>}
 
-                <label>First Name:</label>
-                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange}/>
+                <label htmlFor="email">Email:</label>
+                <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
 
-                <label>Last Name:</label>
-                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange}/>
+                <label htmlFor="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} />
 
-                <label>Password:</label>
-                <input type="password" name="password" value={formData.password} onChange={handleChange}/>
+                <label htmlFor="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} />
 
-                <label>Birth Date:</label>
-                <input type="date" name="birthDate" value={formData.birthDate} onChange={handleChange}/>
+                <label htmlFor="password">Password:</label>
+                <input type="password" id="password" name="password" value={formData.password} minLength={9} onChange={handleChange} required />
 
-                <button type="submit" className={styles.submitButton}>Submit</button>
+                <label htmlFor="birthDate">Birth Date:</label>
+                <input type="date" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
+
+                <button type="submit" className={styles.submitButton} disabled={loading}>
+                    {loading ? 'Submitting...' : 'Submit'}
+                </button>
             </form>
         </div>
     );

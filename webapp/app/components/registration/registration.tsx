@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 
 import { ApplicationInterface } from '@/app/interfaces/Application';
@@ -19,18 +19,18 @@ export const Registration: React.FC<RegistrationProps> = ({ userId, applications
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchUserRegistration = async (applicationId: string) => {
+    const fetchUserRegistration = useCallback(async (applicationId: string) => {
         setLoading(true);
         setError(null);
         try {
             const registration = await getUserRegistration(userId, applicationId);
             setUserRegistration(registration);
-        } catch (error) {
+        } catch (error: unknown) {
             setUserRegistration(null);
             setError("No registration found for this application.");
         }
         setLoading(false);
-    };
+    }, [userId]);
 
     const handleApplicationChange = (application: ApplicationInterface) => {
         setSelectedApplication(application);

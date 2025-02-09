@@ -26,7 +26,7 @@ export const editUserRegistration = async (userId: string, applicationId: string
     return response.data;
 }
 
-export const deleteUserRegistration = async (userId: string, applicationId: string): Promise<> => {
+export const deleteUserRegistration = async (userId: string, applicationId: string): Promise<void> => {
     const response = await api.delete(`/users/registrations/${userId}/${applicationId}`);
 
     return response.data;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { UserRegistrationFormInterface, UserRegistrationInterface } from '@/app/interfaces/UserRegistration';
 import styles from '@/app/components/user/userForm.module.css';
@@ -10,22 +10,6 @@ interface UserFormProps {
     application: ApplicationInterface,
 }
 
-const LANGUAGES = [
-    { label: "English", value: "en" },
-    { label: "Spanish", value: "es" },
-    { label: "French", value: "fr" },
-    { label: "German", value: "de" },
-    { label: "Italian", value: "it" }
-];
-
-const TIMEZONES = [
-    { label: "UTC", value: "UTC" },
-    { label: "Eastern Time (US & Canada)", value: "America/New_York" },
-    { label: "Central European Time", value: "Europe/Berlin" },
-    { label: "India Standard Time", value: "Asia/Kolkata" },
-    { label: "Japan Standard Time", value: "Asia/Tokyo" }
-];
-
 const EMPTY_FORM_DATA: UserRegistrationFormInterface = {
     username: '',
     roles: [],
@@ -36,12 +20,28 @@ const EMPTY_FORM_DATA: UserRegistrationFormInterface = {
 export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onSubmit, application }) => {
     const [formData, setFormData] = useState<UserRegistrationFormInterface>(
         initialData ? {
-            username: initialData.username || '',
-            roles: initialData.roles || [],
-            preferredLanguages: initialData.preferredLanguages || [],
-            timezone: initialData.timezone || '',
+            username: initialData.username || EMPTY_FORM_DATA.username,
+            roles: initialData.roles || EMPTY_FORM_DATA.roles,
+            preferredLanguages: initialData.preferredLanguages || EMPTY_FORM_DATA.preferredLanguages,
+            timezone: initialData.timezone || EMPTY_FORM_DATA.timezone,
         } : EMPTY_FORM_DATA
     );
+
+    const LANGUAGES = useMemo(() => [
+        { label: "English", value: "en" },
+        { label: "Spanish", value: "es" },
+        { label: "French", value: "fr" },
+        { label: "German", value: "de" },
+        { label: "Italian", value: "it" }
+    ], []);
+
+    const TIMEZONES = useMemo(() => [
+        { label: "UTC", value: "UTC" },
+        { label: "Eastern Time (US & Canada)", value: "America/New_York" },
+        { label: "Central European Time", value: "Europe/Berlin" },
+        { label: "India Standard Time", value: "Asia/Kolkata" },
+        { label: "Japan Standard Time", value: "Asia/Tokyo" }
+    ], []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -61,14 +61,22 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
     return (
         <div className={styles.formContainer}>
             <form onSubmit={handleSubmit} className={styles.form}>
-                <label>Application:</label>
-                <input type="text" value={application.name} disabled/>
+                <label htmlFor="application">Application:</label>
+                <input id="application" type="text" value={application.name} disabled/>
 
-                <label>Username:</label>
-                <input type="text" name="username" value={formData.username ?? ''} onChange={handleChange} required/>
+                <label htmlFor="username">Username:</label>
+                <input
+                    id="username"
+                    type="text"
+                    name="username"
+                    value={formData.username ?? ''}
+                    onChange={handleChange}
+                    required
+                />
 
-                <label>Roles:</label>
+                <label htmlFor="roles">Roles:</label>
                 <select
+                    id="roles"
                     name="roles"
                     multiple
                     onChange={(e) => handleMultiSelectChange(e, "roles")}
@@ -82,9 +90,10 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
                     ))}
                 </select>
 
-                <label>Preferred Languages:</label>
+                <label htmlFor="preferredLanguages">Preferred Languages:</label>
                 <select
-                    name="languages"
+                    id="preferredLanguages"
+                    name="preferredLanguages"
                     multiple
                     onChange={(e) => handleMultiSelectChange(e, "preferredLanguages")}
                     className={styles.multiSelect}
@@ -97,8 +106,14 @@ export const UserRegistrationForm: React.FC<UserFormProps> = ({ initialData, onS
                     ))}
                 </select>
 
-                <label>Timezone:</label>
-                <select name="timezone" value={formData.timezone} onChange={handleChange} className={styles.select}>
+                <label htmlFor="timezone">Timezone:</label>
+                <select
+                    id="timezone"
+                    name="timezone"
+                    value={formData.timezone}
+                    onChange={handleChange}
+                    className={styles.select}
+                >
                     <option value="">-- Select Timezone --</option>
                     {TIMEZONES.map(tz => (
                         <option key={tz.value} value={tz.value}>

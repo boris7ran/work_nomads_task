@@ -37,7 +37,7 @@
 }
 
 .loginForm button {
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   padding: 10px;
   font-size: 16px;
@@ -48,7 +48,7 @@
 }
 
 .loginForm button:hover {
-  background-color: #0056b3;
+  background-color: #218838;
 }
 
 .error {
@@ -65,8 +65,40 @@
   }
 }
 
-.googleSsoButton {
-  margin-top: 5px;
-  background-color: #f10303;
+.googleSsoContainer a .googleSsoButton {
+  display: block;
+  margin: 10px auto;
+  text-align: center;
+  background-color: #007bff;
   color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  width: fit-content;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.googleSsoContainer a .googleSsoButton:hover {
+  background-color: #252e8c;
+}
+
+.googleSsoContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.passwordForgotten {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.passwordForgotten:hover {
+  text-decoration: underline;
+  color: #0056b3;
 }

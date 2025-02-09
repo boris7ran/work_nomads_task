@@ -19,13 +19,19 @@ const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({ applications,
         if (selectedApplication) {
             onApplicationChange(selectedApplication);
         }
-    }
+    };
 
     return (
         <div className={styles.container}>
-            <label className={styles.label}>Select Application:</label>
-            <select className={styles.dropdown} onChange={handleApplicationChange}>
-                <option value={selectedApplication ? selectedApplication.id : undefined}>-- Choose an Application --</option>
+            <label className={styles.label} htmlFor="application-select">Select Application:</label>
+            <select
+                id="application-select"
+                className={styles.dropdown}
+                onChange={handleApplicationChange}
+                value={selectedApplication?.id ?? ""}
+                disabled={applications.length === 0}
+            >
+                <option value="" disabled>-- Choose an Application --</option>
                 {applications.map((app) => (
                     <option key={app.id} value={app.id}>
                         {app.name}

@@ -17,31 +17,6 @@
     color: red;
 }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.table th, .table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-}
-
-.table th {
-    background-color: #007bff;
-    color: white;
-}
-
-.table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.table tr:hover {
-    background-color: #f1f1f1;
-}
-
 .createUserContainer {
     text-align: center;
     margin-top: 20px;
@@ -60,34 +35,4 @@
 
 .createUserButton:hover {
     background-color: #218838;
-}
-
-.linkButton {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.editButton {
-    background-color: #ffc107;
-    color: #fff;
-}
-
-.editButton:hover {
-    background-color: #e0a800;
-}
-
-.deleteButton {
-    background-color: #c11f1f;
-    color: #fff;
-}
-
-.deleteButton:hover {
-    background-color: #f10303;
 }

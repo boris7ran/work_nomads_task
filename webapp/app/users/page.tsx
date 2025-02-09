@@ -7,18 +7,24 @@ import { UserInterface } from '@/app/interfaces/User';
 import { getUsers, deleteUser } from '@/app/services/userService';
 import Message, { MessageInterface, MessageType } from '@/app/components/message/message';
 import styles from './page.module.css';
+import UserTable from '../components/user/userTable';
 
 export default function UsersPage() {
     const [users, setUsers] = useState<UserInterface[]>([]);
     const [message, setMessage] = useState<MessageInterface | null>(null);
     const [search, setSearch] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     async function fetchUsers(search: string) {
+        setLoading(true);
+
         try {
             const usersData = await getUsers(search);
             setUsers(usersData);
         } catch (error) {
             setMessage({ text: 'Error occurred during fetching of users', type: MessageType.error });
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -27,56 +33,30 @@ export default function UsersPage() {
     }, [search]);
 
     const handleDeleteUser = async (userId: string) => {
+        const previousUsers = [...users];
+
         try {
             await deleteUser(userId);
 
             setMessage({ text: 'User deleted successfully', type: MessageType.success });
             fetchUsers(search);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
+        } catch (error: unknown) {
+            setUsers(previousUsers);
             setMessage({ text: 'Error occurred during deletion of user', type: MessageType.error });
         }
     }
 
     return (
         <div className={styles.container}>
-            {message && (
-                <Message type={message.type} text={message.text} onClose={() => setMessage(null)}/>
-            )}
+            {message && <Message type={message.type} text={message.text} onClose={() => setMessage(null)} />}
+            {loading && <p>Loading...</p>}
             <div>
                 <h1>Users List</h1>
-                <label>
-                    <>Search:</>
-                    <input onChange={(e) => { setSearch(e.target.value)}} value={search}/>
-                </label>
+                <label htmlFor="search">Search:</label>
+                <input id="search" onChange={(e) => { setSearch(e.target.value) }} value={search} />
             </div>
-            <table className={styles.table}>
-                <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Birth Date</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {users.map((user: UserInterface) => (
-                    <tr key={user.id}>
-                        <td>{user.firstName}</td>
-                        <td>{user.lastName}</td>
-                        <td>{user.email}</td>
-                        <td>{user.birthDate}</td>
-                        <td>
-                            <Link href={`/users/edit/${user.id}`} className={`${styles.linkButton} ${styles.editButton}`}>Edit</Link>
-                            {user.id && (
-                                <button className={`${styles.linkButton} ${styles.deleteButton}`} onClick={() => { handleDeleteUser(user.id) }}>Delete</button>
-                            )}
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <UserTable users={users} onDeleteUser={handleDeleteUser} />
+
             <div className={styles.createUserContainer}>
                 <Link href="/users/create" className={styles.createUserButton}>
                     Create User

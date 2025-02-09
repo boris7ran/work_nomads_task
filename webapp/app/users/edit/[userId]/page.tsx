@@ -11,37 +11,47 @@ import { Registration } from '@/app/components/registration/registration';
 import { ApplicationInterface } from "@/app/interfaces/Application";
 import { getApplications } from '@/app/services/applicationService';
 
-export default function UserCreatePage({ params }: { params: Promise<{ userId: string }> }) {
+export default function UserEditPage({ params }: { params: Promise<{ userId: string }> }) {
     const [userData, setUserData] = useState<UserInterface | null>(null);
     const [applications, setApplications] = useState<ApplicationInterface[] | null>(null);
     const [message, setMessage] = useState<MessageInterface | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
 
-    async function fetchUsers() {
+    const fetchData = async () => {
+        const { userId } = await params;
+        setUserId(userId);
+        await fetchUsers(userId);
+        await fetchApplications();
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchUsers = async (userId: string) => {
         try {
-            const usersData = await getUser((await params).userId);
+            const usersData = await getUser(userId);
             setUserData(usersData);
         } catch (error) {
-            console.error('Error fetching users:', error);
+            setMessage({ text: `Error fetching users:', ${error}`, type: MessageType.error });
         }
-    }
+    };
 
-    async function fetchApplications() {
+    const fetchApplications = async () => {
         try {
             const applicationsData = await getApplications();
             setApplications(applicationsData);
         } catch (error) {
-            console.error('Error fetching users:', error);
+            console.error('Error fetching applications:', error);
+            setMessage({ text: `Error fetching applications:', ${error}`, type: MessageType.error });
         }
-    }
-
-    useEffect(() => {
-        fetchUsers();
-        fetchApplications();
-    }, []);
+    };
 
     const handleUpdateUser = async (userData: UserFormInterface) => {
+        if (!userId) return;
+
         try {
-            await updateUser((await params).userId, userData);
+            await updateUser(userId, userData);
             setMessage({ text: 'User updated successfully', type: MessageType.success });
         } catch (error) {
             setMessage({ text: 'Error occurred during user update', type: MessageType.error });
